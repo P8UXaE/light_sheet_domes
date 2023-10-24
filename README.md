@@ -11,6 +11,12 @@ Just deactivate the environment typing:
 ```
 In order to make git ignore the virtual environments, you must create them with the same name as in ```.gitignore``` file or add the environment name in the file.
 
+To install all the requirements.txt file, you may just type:
+```
+> pip install -r requirements.txt
+```
+Do it inside the desired venv
+
 
 # Tensorflow (easy)
 
