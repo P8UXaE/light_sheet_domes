@@ -5,6 +5,10 @@ To create a new python environment with the desired version:
 > py -3.11 -m venv venv_tf
 > .\ venv_tf\Scripts\activate
 ```
+Just deactivate the environment typing:
+```
+> deactivate
+```
 In order to make git ignore the virtual environments, you must create them with the same name as in ```.gitignore``` file or add the environment name in the file.
 
 
@@ -30,5 +34,5 @@ The default tensorflow does not allow to use GPU independently, so, instead inst
 
 The first time I initialized github on the microscopy computer, it automatically created a branch called master. The main branch of the repository is called ```main```.
 
-In the case you want to switch among branches you can do ```$ git checout main```.
+In the case you want to switch among branches you can do ```$ git checkout main```.
 
