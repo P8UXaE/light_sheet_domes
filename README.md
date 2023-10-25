@@ -42,3 +42,17 @@ The first time I initialized github on the microscopy computer, it automatically
 
 In the case you want to switch among branches you can do ```$ git checkout main```.
 
+# Github things
+
+To get the lastest version of the documents in the repository:
+```
+> git pull
+```
+
+To upload your files to the repository:
+```
+> git add .
+> git commit -m "Message that will appear in the git repository"
+> git push
+```
+In the ```> git add .``` command, you can just substitute the ```.``` for a filename to just add this file to git.
