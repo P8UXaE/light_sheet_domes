@@ -56,3 +56,14 @@ To upload your files to the repository:
 > git push
 ```
 In the ```> git add .``` command, you can just substitute the ```.``` for a filename to just add this file to git.
+
+# Napari
+
+To use napari, just import it, load an image using skimage and initializate the viewer:
+```
+import napari
+import skimage as sk
+im = sk.io.imread('Image dir')
+viewer = napari.Viewer()
+viewer.add_image(im)
+```
