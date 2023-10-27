@@ -70,11 +70,16 @@ viewer.add_image(im)
 
 # N2V for a given dome
 
-The file called ```denoiseDome.py``` (there is a jupyter notebook version of it) denoises a dome using a 2d plane denoise model. To make it work, just change the directories. It is kind of slow. For every 2D plane it takes around 1 or 2 seconds, so multiply the number of Z layers per frames and this is the time it will take.
+The file called ```denoiseDome.py``` (there is a jupyter notebook version of it [not in main]) denoises a dome using a 2d plane denoise model. To make it work, just change the directories. It is kind of slow. For every 2D plane it takes around 1 or 2 seconds, so multiply the number of Z layers per frames and this is the time it will take.
 ```{py}
 dome_path =      './domes/Nice Domes' # Fill with the path of the dome
 name_of_dome =   '21.tif'             # Fill with the name of the dome
 save_dome_path = './domes/domes_n2v/' # Fill with the path to save the dome
 name_save_dome = '21_denoised.tif'    # Write the name of the file to save
 ```
+Also, once you have wwritten the directories, you have to write which 3D frame you want to denoise. If you want to denoise 4D data, just write ```-1```:
+```
+frame = -1 # Write the frame number (-1) for evety timepoint
+```
+
 Be careful with the path of the model. You may need to change it if you move the ```denoiseDome.py``` file. We can train another model using different images of several domes and timepoints in order to make it more adaptable to a given case.

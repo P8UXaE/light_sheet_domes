@@ -9,7 +9,7 @@ name_of_dome = '21.tif' # Fill with the name of the dome
 save_dome_path = './domes/domes_n2v/' # Fill with the path to save the dome
 name_save_dome = '21_denoised.tif' # Write the name of the file to save
 # The frame number must go from 1 to the maxim frame or -1 to denoise all the frames.
-frame = -1 # Write the frame number
+frame = -1 # Write the frame number (-1) for evety timepoint
 
 datagen = N2V_DataGenerator()
 img = datagen.load_imgs_from_directory(directory=dome_path, filter=name_of_dome, dims='TZXY')
