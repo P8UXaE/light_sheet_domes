@@ -88,4 +88,8 @@ Be careful with the path of the model. You may need to change it if you move the
 
 After installing cellpose for napari (in requirements_pynapari), or ```pip install cellpose-napari```, initializate a napari View. Then go to pluggins, and select ```cellpose (cellpose-napari)```. 
 - If it does not appear, close napari and open it again. You can also check if it is installed in Plugins > Install/Uninstall plugins.
-Once you have it and you select it, a panel will appear on the right of the napari viewer. You have to select the image layer you want to segment, and the model. Check process stack as 3D and also, if you want to try several parameters, you may want to uncheck the clear previous results box. Then just press run segmentation. It will take around 5 to 10 minutes to process a ~130 image stack.
+- Once you have it and you select it, a panel will appear on the right of the napari viewer. You have to select the image layer you want to segment, and the model. 
+- Check process stack as 3D and also, if you want to try several parameters, you may want to uncheck the clear previous results box.
+- Then just press run segmentation. It will take around 10 to 15 minutes to process a ~130 image stack.
+
+The problem with cellpose (as all segmentation algorithms) remains in the quality of the image we have. The higher the quality, the better the results.
