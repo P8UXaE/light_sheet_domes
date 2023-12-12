@@ -563,7 +563,7 @@ class imbin():
         return ListOfPoints
 
     
-    def get_mask(self, morph_close_k=20, morph_open_k=10, m_ball=5, times=3, binshape=(2,2), v=''): # Fer el bucle aquí, el de mirar les dimensions de la imatge!!!
+    def get_mask(self, times=3, binshape=(2,2), morph_close_k=20, morph_open_k=10, m_ball=5, v=''): # Fer el bucle aquí, el de mirar les dimensions de la imatge!!!
         '''
         Get the mask of the image created from the points obtained from the convolution.
         
