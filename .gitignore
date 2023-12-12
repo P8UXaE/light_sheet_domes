@@ -5,3 +5,7 @@
 # ignore domes
 /domes
 /binning
+/masks
+
+
+/cellpose_all_dome/cellpose_all_dome.ipynb
