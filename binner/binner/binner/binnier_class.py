@@ -66,7 +66,15 @@ class MyDelaunay(Delaunay):
 
 class imbin():
     def __init__(self, image, is2D=False, treat_3D_as_2D=False):
-        self.im = sk.io.imread(image) # It contains the original image
+        if isinstance(image, str):
+            # If 'image' is a string, it's treated as a file path
+            self.im = sk.io.imread(image)
+        elif isinstance(image, np.ndarray):
+            # If 'image' is a numpy array, it's already loaded
+            self.im = image
+        else:
+            # Handle other cases or raise an error if needed
+            raise ValueError("Invalid image type. 'image' should be a file path (string) or a numpy array.")
         self.is2D = is2D # This contains True if the image is in 2D or false if the image is in 3D (spatial)
         self.nDim = len(self.im.shape) # Just contains the shape of the image
         self.time_dim = False # This will be False if there is no time dimension or true if there is time dimension
@@ -446,7 +454,7 @@ class imbin():
         
         return coords
         
-    def delaunay(self, i, threshold_area = 0.1, threshold_angle = 90, delaunay_to_2D=True):
+    def delaunay(self, i, threshold_area, threshold_angle, delaunay_to_2D=True):
         '''
         '''  
         tri = MyDelaunay(i, delaunay_to_2D)
@@ -563,15 +571,26 @@ class imbin():
         return ListOfPoints
 
     
-    def get_mask(self, times=3, binshape=(2,2), morph_close_k=20, morph_open_k=10, m_ball=5, v=''): # Fer el bucle aquí, el de mirar les dimensions de la imatge!!!
+    def get_mask(self, times=3, binshape=(2,2), morph_close_k=20, morph_open_k=10, m_ball=5, threshold_area=0.1, threshold_angle=90, v=''): # Fer el bucle aquí, el de mirar les dimensions de la imatge!!!
         '''
         Get the mask of the image created from the points obtained from the convolution.
         
-        morph_close_k is the kernel size that will be used.
-        morph_open_k is the kernel size that will be used.
-        times is the convolve times to get the points. If the dots are already computed, there is no need.
-        binshape is the bin shape size used for the convolution. If the dots are already computed, there is no need.
+        - times is the amount of convolutions done. If the dots are already computed, there is no need.
         
+        - binshape is the size of the binning done at each convolution.  If the dots are already computed, there is no need.
+        
+        - morph_close_k is the kernel size that will be used for 2D images or slices.
+        
+        - morph_open_k is the kernel size that will be used for 2D images or slices.
+        
+        - m_ball is the kernel size that will be used for 3D images.
+        
+        - threshold_area is the threshold used to discard or keep the resulting triangles from the Delaunay operation (area-based): mask_area = (triangle_areas - triangle_areas.mean()) < threshold_area * triangle_areas.std()
+        
+        - threshold_angle is the threshold used to discard or keep the resulting triangles from the Delaunay operation (angle-based): mask_angle = largest_angles < threshold_angle
+
+        - v means verbose. To keep track of the process: v='+'.
+
         '''
         
         mask = []
@@ -579,13 +598,12 @@ class imbin():
         if self.dotted_image is None:
             self.dotted_image = self.conv_deconv(times, binshape, v)
         
-        
     
         if self.sDim == 2 and self.time_dim is False: ### CASE 2 SPACE DIMS AND 0 TIME DIMS
             coords = self.get_coords(self.dotted_image) 
             mask = np.zeros((self.dotted_image.shape[0], self.dotted_image.shape[1]))
             if len(coords) > 10:
-                filtered_simplices = self.delaunay(coords, delaunay_to_2D=False)
+                filtered_simplices = self.delaunay(coords, threshold_area, threshold_angle, delaunay_to_2D=False)
                 
                 
                 for i in filtered_simplices: # Iterate over the triangles and put 1 to the lines that unite the dots
@@ -605,7 +623,7 @@ class imbin():
                 mask_i = np.zeros((i.shape[0], i.shape[1]))
                 if len(coords) > 10:                
                 
-                    filtered_simplices = self.delaunay(coords, delaunay_to_2D=False)
+                    filtered_simplices = self.delaunay(coords, threshold_area, threshold_angle, delaunay_to_2D=False)
                 
                     
                     for j in filtered_simplices: # Iterate over the triangles and put 1 to the lines that unite the dots
@@ -624,7 +642,7 @@ class imbin():
             coords = self.get_coords(self.dotted_image)
             mask = np.zeros((self.dotted_image.shape[0], self.dotted_image.shape[1], self.dotted_image.shape[2]))
             if len(coords) > 10:
-                filtered_simplices = self.delaunay(coords, delaunay_to_2D=True)
+                filtered_simplices = self.delaunay(coords, threshold_area, threshold_angle, delaunay_to_2D=True)
                 
                 
                 for i in filtered_simplices:
@@ -644,7 +662,7 @@ class imbin():
                 coords = self.get_coords(i)
                 mask_i = np.zeros((i.shape[0], i.shape[1]))
                 if len(coords) > 10:
-                    filtered_simplices = self.delaunay(coords, delaunay_to_2D=False)
+                    filtered_simplices = self.delaunay(coords, threshold_area, threshold_angle, delaunay_to_2D=False)
                     
                     
                     for j in filtered_simplices:
@@ -666,7 +684,7 @@ class imbin():
                 coords = self.get_coords(i)
                 mask_i = np.zeros((i.shape[0], i.shape[1], i.shape[2]))
                 if len(coords) > 10:
-                    filtered_simplices = self.delaunay(coords, delaunay_to_2D=True)
+                    filtered_simplices = self.delaunay(coords, threshold_area, threshold_angle, delaunay_to_2D=True)
                     
                     
                     for j in filtered_simplices:
@@ -690,7 +708,7 @@ class imbin():
                     coords = self.get_coords(j)
                     mask_j = np.zeros((j.shape[0], j.shape[1]))
                     if len(coords) > 10: ## Otherwise the delaunay does not work
-                        filtered_simplices = self.delaunay(coords, delaunay_to_2D=False)
+                        filtered_simplices = self.delaunay(coords, threshold_area, threshold_angle, delaunay_to_2D=False)
                         
                         for k in filtered_simplices:
                             to_1 = self.bresenham_line(*coords[k][0], *coords[k][1])

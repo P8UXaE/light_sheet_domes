@@ -48,11 +48,27 @@ processed_mask = processed_image.get_mask(...)
 
 ## Documentation
 
+Binner is an image processing package designed to enhance low-quality images by leveraging a unique combination of binning, masking, and morphological operations. The process involves the following steps:
+
+1. Binning: The image is iteratively downsampled, reducing its size based on the specified bin size. The package records the positions of the brightest pixels during this process.
+
+2. Blurring and Masking: The binned image is subjected to a blurring operation, and a mask is generated using the mean. This mask is applied to the original image, effectively highlighting key features.
+
+3. Mask Expansion: The masked image undergoes an expansion process, guided by the previously recorded positions of the brightest pixels. This step helps restore relevant details.
+
+4. Delaunay Triangulation: The package performs Delaunay triangulation on the image to create a mesh of triangles.
+
+5. Triangle Filtering: The triangles generated in the previous step are filtered to select those containing the desired features.
+
+6. Morphological Operations: Basic morphological operations such as closing and opening are applied to fill the space inside the selected triangles, refining the image.
+
+By combining these techniques, Binner aims to improve the quality of images, particularly in scenarios where details are obscured or compromised.
+
 ### Initialization
 
 To initialize the processing, create an object using the `imbin` class. This class takes the following parameters:
 
-- `image`: A numpy array representing a single image channel. It can be a 2D, 3D, or 4D array.
+- `image`: A numpy array representing a single image channel or a string representing the image route. It can be a 2D, 3D, or 4D array / image.
 - `is2D`: A boolean, either `True` or `False` (default is `False`), indicating whether the arrays are 2D or 3D images. When the array has a fourth dimension (time dimension), leave it as `False`.
 - `treat_3D_as_2D`: A boolean, either `True` or `False` (default is `False`), determining if you want to process the 3D image slice by slice. If set to `True`, note that it will process the image as the object contains it. This means that if the original image is a top-bottom view (z-axis), the slices will be z slices. If you wish to process slices along other axes individually, you must rotate the image accordingly.
 
@@ -80,6 +96,8 @@ The `get_mask` function returns a binary mask by processing the image through bi
 - `morph_close_k`: An integer representing the rectangular kernel for the [morphology closing operation](https://docs.opencv.org/3.4/d9/d61/tutorial_py_morphological_ops.html) used to generate the mask result. Applicable when processing 2D images.
 - `morph_open_k`: An integer representing the rectangular kernel for the [morphology opening operation](https://docs.opencv.org/3.4/d9/d61/tutorial_py_morphological_ops.html) used to generate the mask result. Applicable when processing 2D images.
 - `m_ball`: An integer representing the [ball footprint](https://scikit-image.org/docs/stable/api/skimage.morphology.html#skimage.morphology.ball) used for both [closing](https://scikit-image.org/docs/stable/api/skimage.morphology.html#skimage.morphology.binary_closing) and [opening](https://scikit-image.org/docs/stable/api/skimage.morphology.html#skimage.morphology.binary_opening).
+- `threshold_area`: A float representing the &sigma; times from the area distribution. It represents the threshold of the area triangles. mask_area = *(triangle_areas - triangle_areas.mean()) < threshold_area * triangle_areas.std()*
+- `threshold_angle`: A float (can be int) representing the threshold for the maximum angle of a given triangle. Triangles having the biggest angle (in degrees) bigger than the threshold will be discarted.
 - `v`: Verbose. Add `'+'` to enable verbose output during the process.
 
 
