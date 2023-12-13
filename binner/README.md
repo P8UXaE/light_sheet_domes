@@ -7,6 +7,9 @@ Binner can work with several image types. It can work from 2D images up to 4D im
 
 ## Instalation
 
+Download the `binner` package (provisional name) from github.
+
+**Recomended**: Create a python virtual environment to install the package and all its dependencies: `python -m venv your_venv_name`. Then activate the 
 
 
 
@@ -38,7 +41,6 @@ To initialize the processing, create an object using the `imbin` class. This cla
 - `image`: A numpy array representing a single image channel. It can be a 2D, 3D, or 4D array.
 - `is2D`: A boolean, either `True` or `False` (default is `False`), indicating whether the arrays are 2D or 3D images. When the array has a fourth dimension (time dimension), leave it as `False`.
 - `treat_3D_as_2D`: A boolean, either `True` or `False` (default is `False`), determining if you want to process the 3D image slice by slice. If set to `True`, note that it will process the image as the object contains it. This means that if the original image is a top-bottom view (z-axis), the slices will be z slices. If you wish to process slices along other axes individually, you must rotate the image accordingly.
-
 
 ### Functions
 
