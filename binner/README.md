@@ -1,3 +1,5 @@
+![top-image](comparison.png)
+
 # Binner
 
 Binner is a low quality image feature detector. It works by binning the image, masking and expanding to the original size.

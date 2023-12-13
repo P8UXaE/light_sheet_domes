@@ -66,7 +66,7 @@ class MyDelaunay(Delaunay):
 
 class imbin():
     def __init__(self, image, is2D=False, treat_3D_as_2D=False):
-        self.im = image # It contains the original image
+        self.im = sk.io.imread(image) # It contains the original image
         self.is2D = is2D # This contains True if the image is in 2D or false if the image is in 3D (spatial)
         self.nDim = len(self.im.shape) # Just contains the shape of the image
         self.time_dim = False # This will be False if there is no time dimension or true if there is time dimension
