@@ -7,27 +7,39 @@ Binner can work with several image types. It can work from 2D images up to 4D im
 
 ## Instalation
 
-Download the `binner` package (provisional name) from github.
+1. Download the `binner` package:
+- Download the `binner` package (provisional name) from github.
 
-**Recomended**: Create a python virtual environment to install the package and all its dependencies: `python -m venv your_venv_name`. Then activate the 
+2. **Recommended**: Create a python virtual environment:
+- Open a terminal or command prompt.
+- Run the following command to create a Python virtual environment: `python -m venv your_venv_name`. 
+- Activate the virtual environment:
+    - On windows: `.\your_venv_name\Scripts\activate`
+    - On UNIX: `source your_venv_name\bin\activate`
 
+3. Navigate to the `binner\binner` Directory:
+- In the terminal or command prompt, move to the `binner\binner` directory. Confirm that you see the `setup.py` file and the `MANIFEST.in` file in this directory.
+
+4. Install the Package:
+- Execute the following `pip` command to install the package inside the virtual environment: `pip install .`.
+
+5. Post-Installation Cleanup:
+- After a successful installation, you can safely remove the downloaded folder (the one containing `setup.py` and `MANIFEST.in`), as the package is now installed in the virtual environment.
 
 
 ## Usage
 
 
-To use Binner, you just need to import ```skimage``` as the image loader and ```imbin``` as the image processing algorithm.
+To use Binner, you just need to import ```imbin``` as the image processing algorithm.
 
 ```
-import skimage as sk
 from binner import imbin
 ```
 
 Then you have to load the image and, for instance, get the binary mask of the image.
 
 ```
-image = sk.io.imread('image route')
-processed_image = imbin(...)
+processed_image = imbin('image route')
 processed_mask = processed_image.get_mask(...)
 ```
 
