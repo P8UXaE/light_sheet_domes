@@ -15,5 +15,6 @@ setup(
         'tifffile==2023.12.9',
         'opencv-python==4.8.1.78',
         'scikit-image==0.22.0',
+        'matplotlib==3.8.0',
     ],
 )
