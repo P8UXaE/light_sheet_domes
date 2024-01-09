@@ -1,6 +1,7 @@
 # ignore venvs
 /pynapari
 /venv_tf
+/napariVenv
 
 # ignore domes
 /domes
