@@ -22,9 +22,10 @@ Do it inside the desired venv
 
 Tensorflow is a python package that sometimes has incompatibilities with other packages. I recomend creating a new environment and installing tensorflow inside. In this same package you can install n2v.
 
-You can just install tensorflow
+You can just install tensorflow (check which version of tf works with n2v!)
 ```
-> pip install tensorflow
+> pip install tensorflow==2.13.
+
 ```
 This way, tensorflow will work using CPU:
 ```
