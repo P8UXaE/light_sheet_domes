@@ -1,0 +1,9 @@
+MANIFEST.in
+setup.py
+dottamine/__init__.py
+dottamine/dottamine_class.py
+dottamine.egg-info/PKG-INFO
+dottamine.egg-info/SOURCES.txt
+dottamine.egg-info/dependency_links.txt
+dottamine.egg-info/requires.txt
+dottamine.egg-info/top_level.txt
