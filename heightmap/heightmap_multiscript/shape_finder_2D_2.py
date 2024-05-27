@@ -13,6 +13,9 @@ import glob
 
 
 def shape_finder_2D(epithelial, angle=40):
+
+    warnings.filterwarnings("ignore", message="divide by zero encountered in scalar divide")
+
     '''
     Falling line algorithm for 2D front image rotation, delta degree = 20º
     - epithelial is the 2D image that has to be fed from front

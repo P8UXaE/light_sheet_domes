@@ -20,6 +20,9 @@ def shape_finder_2D_v2(hull_lines, hull_mask, sum_lines, sum_mask, angle=40):
     - sum_mask is the gaussian or the line obtained using hull from front
     - angle is the max rotation for the 2D image
     '''
+
+    warnings.filterwarnings("ignore", message="divide by zero encountered in scalar divide")
+
     angles = [i for i in range(-angle, angle+1, 20)]
     # angles = [40]
     total_cell_mask = np.zeros(shape=(hull_lines.shape))
@@ -108,7 +111,7 @@ if direction == 'r':
     sum_top_line_r = np.transpose(sum_top_line_r, axes=(2,1,0))
 
 
-warnings.filterwarnings("ignore", message="RuntimeWarning: divide by zero encountered in scalar divide")
+warnings.filterwarnings("ignore", message="divide by zero encountered in scalar divide")
 
 
 apical_dots_r = Parallel(n_jobs=-1)(delayed(shape_finder_2D_v2)(i, j, k, l) for i, j, k, l in zip(common_functions.normalize_image(epithelial_hull_r), common_functions.normalize_image(hull_top_line_r), common_functions.normalize_image(epithelial_sum_r), common_functions.normalize_image(sum_top_line_r)))
