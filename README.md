@@ -1,4 +1,20 @@
-# Environments
+This readme file is thought to be the introduction and some basic things to install different packages. This repo, *Knowledge-files*, contains separate folders for the different methods. Each folder contains its readme file to follow the code and understand how it works.
+
+[Noise2Void](./noise2Void/README.md)
+
+[Dottamine](./dottamine/README.md)
+
+[Heightmap - Tissue mesh](./heightmap/README.md)
+
+[Mypose](./mypose/README.md)
+
+
+
+
+
+
+
+<!-- # Environments
 
 To create a new python environment with the desired version:
 ```{bash}
@@ -94,4 +110,4 @@ After installing cellpose for napari (in requirements_pynapari), or ```pip insta
 - Check process stack as 3D and also, if you want to try several parameters, you may want to uncheck the clear previous results box.
 - Then just press run segmentation. It will take around 10 to 15 minutes to process a ~130 image stack.
 
-The problem with cellpose (as all segmentation algorithms) remains in the quality of the image we have. The higher the quality, the better the results.
+The problem with cellpose (as all segmentation algorithms) remains in the quality of the image we have. The higher the quality, the better the results. -->
