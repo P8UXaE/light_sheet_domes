@@ -20,3 +20,16 @@ To recover more of the membrane shape, there is a second part of the algorithm w
 In order to manually correct a mask open napari and drag the image used to get the segmentation and the obtained mask. Then open the IPython console and write: ```viewer.add_labels(viewer.layers[‘segmented_cell’].data)``` to create a Labels layer. In this layer you can manually draw or erase parts of the mask. Make sure you are using the same label to draw as the mask by clicking the Pick mode and selecting the mask. Switch the blending to additive to see the real image at the background. 
 
 Save the Label file. 
+
+
+# Blender 4.1
+
+Download the [tif to blender](https://github.com/oanegros/tif2blender) zip. You can follow the installation instructions from github. But basically: 
+
+1. Download the zip. 
+1. Inside blender go Edit à Preferences à Add-ons. 
+1. Click Install and search the zip. 
+1. Install it and search it inside the Add-ons screen. 
+1. Install tifffile from the import. 
+
+
