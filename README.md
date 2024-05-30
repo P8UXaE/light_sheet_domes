@@ -7,12 +7,16 @@ This readme file is thought to be the introduction and some basic things to inst
 Each folder contains its readme file to follow the code and understand how it works.
 
 [Noise2Void](./noise2Void/README.md)
+- Trained Noise2Void model for 2D to 4D data. 
 
 [Dottamine](./dottamine/README.md)
+- A pip-installable package that aims to mask 2D and 3D images.
 
 [Heightmap - Tissue mesh](./heightmap/README.md)
+- Method to work at tissue level and obtain a mesh in 3d or a heightmap.
 
 [Mypose](./mypose/README.md)
+- Algorithmic watershed segmentation for single cells.
 
 
 
