@@ -46,3 +46,12 @@ The initial approach is thought to be the equivalent on the manual we have done.
 # Benchmark
 
 To benchmark the pipeline we compared the results between ours and LocalZProjector.
+
+
+
+# Future work
+
+This method aims to obtain the apical shape of the tissue but it is not as precise as I would like it to be. The perfect thing would be to get a clear continuous line superposed on the apical part of the cells. We detected 2 problems: the first one is that the initial mask is not as good as needed to contiue the process. This we solved by skipping dottamine and drawing manually the contour of the tissue. The second problem is the final cleaning of the dots. There is none, so we depend on how well we can skip detecting non-good dots. If we could clean those outer dots, we could then obtain a super continuous line that descrived the apical, and meshing these dots, we would have a **perfect** mesh of apical.
+
+Now we are stuck at getting the gaussian of the dots and meshing it to have the tissue shape of the system.
+
