@@ -1,4 +1,10 @@
-This readme file is thought to be the introduction and some basic things to install different packages. This repo, *Knowledge-files*, contains separate folders for the different methods. Each folder contains its readme file to follow the code and understand how it works.
+# Light sheet microscope visualisation and quantifaction at different scales
+
+This readme file is thought to be the introduction and some basic things to install different packages. This repo, *Knowledge-files*, contains separate folders for the different methods.
+
+## Methods by folder
+
+Each folder contains its readme file to follow the code and understand how it works.
 
 [Noise2Void](./noise2Void/README.md)
 
@@ -10,11 +16,9 @@ This readme file is thought to be the introduction and some basic things to inst
 
 
 
+## Useful information
 
-
-
-
-<!-- # Environments
+### Environments
 
 To create a new python environment with the desired version:
 ```{bash}
@@ -34,9 +38,9 @@ To install all the requirements.txt file, you may just type:
 Do it inside the desired venv
 
 
-# Tensorflow (easy)
+### Tensorflow (easy)
 
-Tensorflow is a python package that sometimes has incompatibilities with other packages. I recomend creating a new environment and installing tensorflow inside. In this same package you can install n2v.
+Tensorflow is a python package that sometimes has incompatibilities with other packages. I recomend creating a new environment and installing tensorflow inside. In this same package you can install n2v since it needs tensorflow to run.
 
 You can just install tensorflow (check which version of tf works with n2v!)
 ```
@@ -53,13 +57,13 @@ And this way, using GPU:
 ```
 The default tensorflow does not allow to use GPU independently, so, instead install a previous version if the case.
 
-# Problems I had with github.
 
-The first time I initialized github on the microscopy computer, it automatically created a branch called master. The main branch of the repository is called ```main```.
+### Github
 
-In the case you want to switch among branches you can do ```$ git checkout main```.
+If you have multiple branches in a repository and you connect github repo at visual studio code you can go switching branches in the folder containing the repo just changing the working branch at the bottom left of VScode. 
 
-# Github things
+The first time I initialized github on the microscopy computer, it automatically created a branch called master. The main branch of the repository is called ```main```. In the case you want to switch among branches directly in the terminal you can do ```$ git checkout main```.
+
 
 To get the lastest version of the documents in the repository:
 ```
@@ -73,6 +77,13 @@ To upload your files to the repository:
 > git push
 ```
 In the ```> git add .``` command, you can just substitute the ```.``` for a filename to just add this file to git.
+
+
+
+
+
+
+<!--
 
 # Napari
 
