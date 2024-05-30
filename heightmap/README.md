@@ -20,7 +20,7 @@ This methods needs a human input before detecting the apical. Here are the steps
 
 ![manual_apical](./visual/manual_apical.png)
 
-After that you are set to run the file that takes this manual input as the initial guess, then it blurs it and uses it to find the apical shape. It will find 2 different apicals; one y-sliced and the other x-sliced. It will sum both, remove the lateral dots using some margin value (20 for example) and get the gaussian. 
+After that you are set to run [the file](./heightmap_multiscript/fromManual.ipynb) **change url and file position** that takes this manual input as the initial guess, then it blurs it and uses it to find the apical shape. It will find 2 different apicals; one y-sliced and the other x-sliced. It will sum both, remove the lateral dots using some margin value (20 for example) and get the gaussian.
 
 Then, using tif2blender you can load the gaussian, and make it into a mesh. 
 
