@@ -4,7 +4,7 @@ import os
 
 
 # time_dome = str(4)
-time_dome = str(1)
+time_dome = str(2)
 dome_number = str(99)
 # folder_and_dome = str('./../../../../Desktop/dome70_fallinglineMove/70_denoised_tp')
 folder_and_dome = str('./../../../../Desktop/dome'+dome_number+'_tp'+time_dome+'/'+dome_number+'_denoised_tp')
