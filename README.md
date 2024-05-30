@@ -68,6 +68,7 @@ im = sk.io.imread('Image dir')
 viewer = napari.Viewer()
 viewer.add_image(im)
 ```
+If it does not work, you can install conda and then create an environment where you install [napari](https://napari.org/stable/tutorials/fundamentals/installation).
 
 # N2V for a given dome
 
