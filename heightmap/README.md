@@ -24,7 +24,7 @@ After that you are set to run [the file](./heightmap_multiscript/fromManual.ipyn
 
 Then, using tif2blender you can load the gaussian, and make it into a mesh. 
 
-![mesh_tp4_dome_70](./visual/mesh_tp4_dome70.png)
+![mesh_manual_apical](./visual/mesh_tp4_dome70.png)
 
 
 # Automatic pipeline
