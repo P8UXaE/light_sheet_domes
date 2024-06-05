@@ -46,14 +46,44 @@ From this two apical estimations (dottamine and hull) we can run a process that 
 
 <!--There is also another pipeline that calculates some parameters when placing the dots compared to the outlines of the mask and the borders. -->
 
- 
-
-
 
 
 # Benchmark
 
-To benchmark the pipeline we compared the results between ours and LocalZProjector.
+To benchmark the pipeline we built some synthetic flat and curved monolayer and run Dottamine + Falling Line. We then added some noise on it and blurred vertically to make it realistic. Then, we also run LocalZProjector on it so we can compare the results obtained with our method to the commonly used tools.
+
+
+
+# Visualisation or raw data in imagej
+
+Open imagej and go to plugins &rarr; 3D script &rarr; Interactive animation. Then Animation &rarr; Start text-based animation editor. Write this to have a quite decent animation.
+
+At frame 0: 
+- reset transformation 
+- zoom by a factor of 0.6
+- rotate by 120 degrees around (0, 0, 1)
+- rotate by -60 degrees around (1, 0, 0)
+
+From frame 0 to frame 62:
+- rotate by 90 degrees around (0, 1, 0)
+- rotate by 45 degrees around (1, 0, 1)
+
+From frame 62 to frame 125:
+- rotate by 90 degrees around (0, 1, 0)
+- rotate by 45 degrees around (1, 0, 1)
+
+From frame 125 to frame 187:
+- rotate by 90 degrees around (0, 1, 0)
+- rotate by 45 degrees around (1, 0, 1)
+
+From frame 187 to frame 250:
+- rotate by 89 degrees around (0, 1, 0)
+- rotate by 45 degrees around (1, 0, 1)
+
+
+# Visualisation of mesh in blender
+
+The steps to follow are the same as described in Mypose. The difference is that if you want to calculate curvature in meshlab or other software, you should reduce the amount of vertices and edges of the mesh for a faster calculation. Initially, a mesh that comes from a gaussian can have more than 2 million vertices. To reduce the amount of it add a modifier to the mesh (be careful to apply the mesh to the data before doing this). The modifier is Generate &rarr; Decimate. In Collapse reduce the ratio so the amount of faces is somewhere around 200k or 300k. It may take a while, but this will make the computation on the mesh much faster.
 
 
 
@@ -82,4 +112,7 @@ At each image we also add a signal as a straight line at the bottom, so we make 
 ![image_demonstration_of_process](./visual/apical_process.png)
 
 This process is run on parallel foreach slice. It takes a bit more than 3 minutes for 750 slices.
+
+
+
 
