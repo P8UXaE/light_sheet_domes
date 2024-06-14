@@ -4,6 +4,7 @@ from scipy.ndimage import gaussian_filter
 import skimage as sk
 import copy
 from scipy.spatial import Delaunay
+from joblib import Parallel, delayed
 
 
 
@@ -113,55 +114,180 @@ class dotim():
         '''
         print(f"Your image has {self.nDim} dimensions. It contains {self.sDim} spatial dimensions. Time is {self.time_dim}.")
         
+    # def poolAndMax2D(self, input, binshape=(2,2), v=''):
+    #     '''
+    #     Convolutes the image and saves the positions of the brightests pixels.
+    #     '''
+    #     v = v.count('+')
+    #     shapeY, shapeX = input.shape[0], input.shape[1] # Original shape of the image
+    #     while shapeY % binshape[0] != 0: # If the image Y dimension is not even
+    #         zero_plane = np.zeros_like(input[:binshape[0] - input.shape[0] % binshape[0], :]) # Create a 2D plane that matches the size of the data
+    #         input = np.concatenate([zero_plane, input], axis=0) # Concatenate the zero-filled plane with the original data
+    #         print(f"Modify Y: {input.shape}, added layer.") if v > 0 else None
+    #         shapeY = input.shape[0]
+    #     while shapeX % binshape[1] != 0: # If the image X dimension is not even
+    #         zero_plane = np.zeros_like(input[:, :binshape[1] - input.shape[1] % binshape[1]]) # Create a 2D plane that matches the size of the data
+    #         input = np.concatenate([zero_plane, input], axis=1) # Concatenate the zero-filled plane with the original data
+    #         print(f" Modify X: {input.shape}, added layer.") if v > 0 else None
+    #         shapeX =  input.shape[1]
+            
+    #     print(input.shape) if v > 0 else None
+
+    #     shapeY, shapeX = input.shape[0], input.shape[1] # Recompute the shape (new shape)
+    #     newY, newX = int(shapeY/binshape[0]), int(shapeX/binshape[1]) # The new dimensions that the image will have
+    #     # print(shapeY, shapeX, newY, newX)
+    #     poolList = []
+    #     maxList = [[0 for _ in range(newX)] for _ in range(newY)] # Create a nested list to save the coordinates
+    #     print(f"Convolution from {shapeY} {shapeX} to {len(maxList)} {len(maxList[0])}") if v else None
+
+    #     c = 0
+    #     perc = 0
+    #     total = int(newX*newY)
+    #     for y in range(0, shapeY, binshape[0]):
+    #         for x in range(0, shapeX, binshape[1]):
+    #             patch = input[y:y+binshape[0], x:x+binshape[1]] # Create the patch of pool dimension
+    #             poolList.append(patch.max()) # Get the max value of the patch and append it to the list
+                
+    #             indices = np.unravel_index(np.argmax(patch), patch.shape) # Find the indices of the max value
+    #             maxList[int(y / binshape[0])][int(x / binshape[1])] = (y + indices[0], x + indices[1]) # Add the coordinates in the position of the patch in the list
+                
+    #             c+=1
+    #             print(f"{c}/{total}, {perc}%", end="\r") if int(c*100/total) > perc and v > 1 else None 
+    #             perc += 1 if int(c*100/total) > perc else 0
+                
+        
+    #     print(f"{c}/{total}, {perc}%, DONE!") if v > 1 else None
+                
+    #     poolArray = np.array(poolList)
+    #     poolArray = np.reshape(poolArray, (newY, newX))
+    #     maxList = np.array(maxList)
+        
+    #     return poolArray, maxList, binshape
+
+    #### Multiprocessing poolAndMax2D
+    # def poolAndMax2D(self, input, binshape=(2,2), v=''):
+    #     '''
+    #     Convolutes the image and saves the positions of the brightest pixels.
+    #     '''
+    #     def process_patch(y, x, binshape, input):
+    #         patch = input[y:y+binshape[0], x:x+binshape[1]]  # Create the patch of pool dimension
+    #         max_val = patch.max()  # Get the max value of the patch
+    #         indices = np.unravel_index(np.argmax(patch), patch.shape)  # Find the indices of the max value
+    #         max_coords = (y + indices[0], x + indices[1])  # Compute the coordinates in the original image
+    #         return max_val, max_coords, y // binshape[0], x // binshape[1]
+    #     v = v.count('+')
+    #     shapeY, shapeX = input.shape[0], input.shape[1]  # Original shape of the image
+    #     while shapeY % binshape[0] != 0:  # If the image Y dimension is not even
+    #         zero_plane = np.zeros_like(input[:binshape[0] - input.shape[0] % binshape[0], :])  # Create a 2D plane that matches the size of the data
+    #         input = np.concatenate([zero_plane, input], axis=0)  # Concatenate the zero-filled plane with the original data
+    #         print(f"Modify Y: {input.shape}, added layer.") if v > 0 else None
+    #         shapeY = input.shape[0]
+    #     while shapeX % binshape[1] != 0:  # If the image X dimension is not even
+    #         zero_plane = np.zeros_like(input[:, :binshape[1] - input.shape[1] % binshape[1]])  # Create a 2D plane that matches the size of the data
+    #         input = np.concatenate([zero_plane, input], axis=1)  # Concatenate the zero-filled plane with the original data
+    #         print(f"Modify X: {input.shape}, added layer.") if v > 0 else None
+    #         shapeX = input.shape[1]
+
+    #     print(input.shape) if v > 0 else None
+
+    #     shapeY, shapeX = input.shape[0], input.shape[1]  # Recompute the shape (new shape)
+    #     newY, newX = int(shapeY/binshape[0]), int(shapeX/binshape[1])  # The new dimensions that the image will have
+    #     print(f"Convolution from {shapeY} {shapeX} to {len(maxList)} {len(maxList[0])}") if v else None
+
+    #     total = int(newX * newY)
+    #     perc = 0
+    #     c = 0
+
+    #     coords = [(y, x) for y in range(0, shapeY, binshape[0]) for x in range(0, shapeX, binshape[1])]
+
+    #     results = Parallel(n_jobs=-1)(delayed(process_patch)(y, x, binshape, input) for y, x in coords)
+
+    #     poolList = []
+    #     maxList = [[0 for _ in range(newX)] for _ in range(newY)]
+
+    #     for max_val, max_coords, i, j in results:
+    #         poolList.append(max_val)
+    #         maxList[i][j] = max_coords
+    #         c += 1
+    #         if int(c * 100 / total) > perc:
+    #             perc += 1
+    #             if perc > 1:
+    #                 print(f"{c}/{total}, {perc}%", end="\r") if v else None
+
+    #     print(f"{c}/{total}, {perc}%, DONE!") if v > 1 else None
+
+    #     poolArray = np.array(poolList).reshape(newY, newX)
+    #     maxList = np.array(maxList)
+
+    #     return poolArray, maxList, binshape
+
     def poolAndMax2D(self, input, binshape=(2,2), v=''):
         '''
-        Convolutes the image and saves the positions of the brightests pixels.
+        Convolutes the image and saves the positions of the brightest pixels.
         '''
+        def process_block(start_y, end_y, start_x, end_x, binshape, input):
+            block_results = []
+            for y in range(start_y, end_y, binshape[0]):
+                for x in range(start_x, end_x, binshape[1]):
+                    patch = input[y:y+binshape[0], x:x+binshape[1]]
+                    max_val = patch.max()
+                    indices = np.unravel_index(np.argmax(patch), patch.shape)
+                    max_coords = (y + indices[0], x + indices[1])
+                    block_results.append((max_val, max_coords, y // binshape[0], x // binshape[1]))
+            return block_results
         v = v.count('+')
-        shapeY, shapeX = input.shape[0], input.shape[1] # Original shape of the image
-        while shapeY % binshape[0] != 0: # If the image Y dimension is not even
-            zero_plane = np.zeros_like(input[:binshape[0] - input.shape[0] % binshape[0], :]) # Create a 2D plane that matches the size of the data
-            input = np.concatenate([zero_plane, input], axis=0) # Concatenate the zero-filled plane with the original data
+        shapeY, shapeX = input.shape[0], input.shape[1]
+        while shapeY % binshape[0] != 0:
+            zero_plane = np.zeros_like(input[:binshape[0] - input.shape[0] % binshape[0], :])
+            input = np.concatenate([zero_plane, input], axis=0)
             print(f"Modify Y: {input.shape}, added layer.") if v > 0 else None
             shapeY = input.shape[0]
-        while shapeX % binshape[1] != 0: # If the image X dimension is not even
-            zero_plane = np.zeros_like(input[:, :binshape[1] - input.shape[1] % binshape[1]]) # Create a 2D plane that matches the size of the data
-            input = np.concatenate([zero_plane, input], axis=1) # Concatenate the zero-filled plane with the original data
-            print(f" Modify X: {input.shape}, added layer.") if v > 0 else None
-            shapeX =  input.shape[1]
-            
+        while shapeX % binshape[1] != 0:
+            zero_plane = np.zeros_like(input[:, :binshape[1] - input.shape[1] % binshape[1]])
+            input = np.concatenate([zero_plane, input], axis=1)
+            print(f"Modify X: {input.shape}, added layer.") if v > 0 else None
+            shapeX = input.shape[1]
+
         print(input.shape) if v > 0 else None
 
-        shapeY, shapeX = input.shape[0], input.shape[1] # Recompute the shape (new shape)
-        newY, newX = int(shapeY/binshape[0]), int(shapeX/binshape[1]) # The new dimensions that the image will have
-        # print(shapeY, shapeX, newY, newX)
-        poolList = []
-        maxList = [[0 for _ in range(newX)] for _ in range(newY)] # Create a nested list to save the coordinates
-        print(f"Convolution from {shapeY} {shapeX} to {len(maxList)} {len(maxList[0])}") if v else None
+        shapeY, shapeX = input.shape[0], input.shape[1]
+        newY, newX = int(shapeY / binshape[0]), int(shapeX / binshape[1])
+        print(f"Convolution from {shapeY} {shapeX} to {newY} {newX}") if v > 0 else None
 
-        c = 0
+        poolList = []
+        maxList = [[0 for _ in range(newX)] for _ in range(newY)]
+
+        total = int(newX * newY)
         perc = 0
-        total = int(newX*newY)
-        for y in range(0, shapeY, binshape[0]):
-            for x in range(0, shapeX, binshape[1]):
-                patch = input[y:y+binshape[0], x:x+binshape[1]] # Create the patch of pool dimension
-                poolList.append(patch.max()) # Get the max value of the patch and append it to the list
-                
-                indices = np.unravel_index(np.argmax(patch), patch.shape) # Find the indices of the max value
-                maxList[int(y / binshape[0])][int(x / binshape[1])] = (y + indices[0], x + indices[1]) # Add the coordinates in the position of the patch in the list
-                
-                c+=1
-                print(f"{c}/{total}, {perc}%", end="\r") if int(c*100/total) > perc and v > 1 else None 
-                perc += 1 if int(c*100/total) > perc else 0
-                
-        
+        c = 0
+
+        block_size_y = 10 * binshape[0]  # Number of rows per block
+        block_size_x = 10 * binshape[1]  # Number of columns per block
+
+        coords = [(y, min(y + block_size_y, shapeY), x, min(x + block_size_x, shapeX))
+                for y in range(0, shapeY, block_size_y)
+                for x in range(0, shapeX, block_size_x)]
+
+        results = Parallel(n_jobs=-1)(delayed(process_block)(start_y, end_y, start_x, end_x, binshape, input)
+                                    for start_y, end_y, start_x, end_x in coords)
+
+        for block_results in results:
+            for max_val, max_coords, i, j in block_results:
+                poolList.append(max_val)
+                maxList[i][j] = max_coords
+                c += 1
+                if int(c * 100 / total) > perc:
+                    perc += 1
+                    if perc > 1:
+                        print(f"{c}/{total}, {perc}%", end="\r") if v > 0 else None
+
         print(f"{c}/{total}, {perc}%, DONE!") if v > 1 else None
-                
-        poolArray = np.array(poolList)
-        poolArray = np.reshape(poolArray, (newY, newX))
+
+        poolArray = np.array(poolList).reshape(newY, newX)
         maxList = np.array(maxList)
-        
+
         return poolArray, maxList, binshape
+    #### End Multiprocessing poolAndMax2D
 
     def deconv2D(self, input, maxList, binshape=(2,2), v=''):
         '''
@@ -177,6 +303,7 @@ class dotim():
         c = 0
         perc = 0
         total = int(shapeY*shapeX)
+
         for y in range(0, shapeY):
             for x in range(0, shapeX):
                 indices = maxList[y, x]
@@ -186,62 +313,191 @@ class dotim():
                 print(f"{c}/{total}, {perc}%", end="\r") if int(c*100/total) > perc and v > 1 else None 
                 perc += 1 if int(c*100/total) > perc else 0
                 
-        
         print(f"{c}/{total}, {perc}%, DONE!") if v > 1 else None
         
         output = np.array(output)
 
         return output
-        
-    def __poolAndMax3d(self, input, binshape=(2,2,2), v=''):
-        '''
-        Do 3D convolution.
-        '''
-        v = v.count('+')
-        # Make the 3D stack binnable by the size
-        while input.shape[0] % binshape[0] != 0: # If the image Y dimension is not even
-            zero_plane = np.zeros_like(input[:binshape[0] - input.shape[0] % binshape[0], :, :]) # Create a 2D plane that matches the size of the data
-            input = np.concatenate([zero_plane, input], axis=0) # Concatenate the zero-filled plane with the original data
-            print(f"Modify Z: {input.shape}, added layer.") if v > 0 else None
-        while input.shape[1] % binshape[1] != 0: # If the image X dimension is not even
-            zero_plane = np.zeros_like(input[:, :binshape[1] - input.shape[1] % binshape[1], :]) # Create a 2D plane that matches the size of the data
-            input = np.concatenate([zero_plane, input], axis=1) # Concatenate the zero-filled plane with the original data
-            print(f"Modify Y: {input.shape}, added layer.") if v > 0 else None
-        while  input.shape[2] % binshape[2] != 0: # If the image X dimension is not even
-            zero_plane = np.zeros_like(input[:, :, :binshape[2] - input.shape[2] % binshape[2]]) # Create a 2D plane that matches the size of the data
-            input = np.concatenate([zero_plane, input], axis=2) # Concatenate the zero-filled plane with the original data
-            print(f"Modify X: {input.shape}, added layer.") if v > 0 else None
 
-        print(input.shape) if v > 0 else None
+    #### Multiprocessing deconv2D
+    # def deconv2D(self, input, maxList, binshape=(2,2), v=''):
+    #     '''
+    #     Upconvolve the image using the list where the pixel was the brightest.
+    #     '''
+            
+    #     def process_deconv_block(start_y, end_y, start_x, end_x, shapeX, input, maxList):
+    #         block_output = []
+    #         for y in range(start_y, end_y):
+    #             for x in range(start_x, end_x):
+    #                 indices = maxList[y, x]
+    #                 block_output.append((indices, input[y, x]))
+    #         return block_output
+    #     v = v.count('+')
+    #     shapeY, shapeX = maxList.shape[0], maxList.shape[1]
+    #     newY, newX = int(maxList.shape[0] * binshape[0]), int(maxList.shape[1] * binshape[1])
+    #     print(f"Deconvolution from {shapeY} {shapeX} to {newY} {newX}") if v > 0 else None
+
+    #     output = np.zeros((newY, newX))  # Initialize output array with zeros
+
+    #     total = int(shapeY * shapeX)
+    #     perc = 0
+    #     c = 0
+
+    #     block_size_y = 10  # Number of rows per block
+    #     block_size_x = 10  # Number of columns per block
+
+    #     coords = [(y, min(y + block_size_y, shapeY), x, min(x + block_size_x, shapeX))
+    #             for y in range(0, shapeY, block_size_y)
+    #             for x in range(0, shapeX, block_size_x)]
+
+    #     results = Parallel(n_jobs=-1)(delayed(process_deconv_block)(start_y, end_y, start_x, end_x, shapeX, input, maxList)
+    #                                 for start_y, end_y, start_x, end_x in coords)
+
+    #     for block_results in results:
+    #         for indices, value in block_results:
+    #             output[indices[0], indices[1]] = value
+    #             c += 1
+    #             if int(c * 100 / total) > perc:
+    #                 perc += 1
+    #                 if v > 1:
+    #                     print(f"{c}/{total}, {perc}%", end="\r")
+
+    #     if v > 1:
+    #         print(f"{c}/{total}, {perc}%, DONE!")
+
+    #     return output
+    #### End Multiprocessing deconv2D
         
-        shapeZ, shapeY, shapeX = input.shape[0], input.shape[1], input.shape[2] # Compute the shape (new shape)
-        newZ, newY, newX = int(shapeZ/binshape[0]), int(shapeY/binshape[1]), int(shapeX/binshape[2]) # The new dimensions that the image will have
-        # print(shapeY, shapeX, newY, newX)
+    # def __poolAndMax3d(self, input, binshape=(2,2,2), v=''):
+    #     '''
+    #     Do 3D convolution.
+    #     '''
+    #     v = v.count('+')
+    #     # Make the 3D stack binnable by the size
+    #     while input.shape[0] % binshape[0] != 0: # If the image Y dimension is not even
+    #         zero_plane = np.zeros_like(input[:binshape[0] - input.shape[0] % binshape[0], :, :]) # Create a 2D plane that matches the size of the data
+    #         input = np.concatenate([zero_plane, input], axis=0) # Concatenate the zero-filled plane with the original data
+    #         print(f"Modify Z: {input.shape}, added layer.") if v > 0 else None
+    #     while input.shape[1] % binshape[1] != 0: # If the image X dimension is not even
+    #         zero_plane = np.zeros_like(input[:, :binshape[1] - input.shape[1] % binshape[1], :]) # Create a 2D plane that matches the size of the data
+    #         input = np.concatenate([zero_plane, input], axis=1) # Concatenate the zero-filled plane with the original data
+    #         print(f"Modify Y: {input.shape}, added layer.") if v > 0 else None
+    #     while  input.shape[2] % binshape[2] != 0: # If the image X dimension is not even
+    #         zero_plane = np.zeros_like(input[:, :, :binshape[2] - input.shape[2] % binshape[2]]) # Create a 2D plane that matches the size of the data
+    #         input = np.concatenate([zero_plane, input], axis=2) # Concatenate the zero-filled plane with the original data
+    #         print(f"Modify X: {input.shape}, added layer.") if v > 0 else None
+
+    #     print(input.shape) if v > 0 else None
+        
+    #     shapeZ, shapeY, shapeX = input.shape[0], input.shape[1], input.shape[2] # Compute the shape (new shape)
+    #     newZ, newY, newX = int(shapeZ/binshape[0]), int(shapeY/binshape[1]), int(shapeX/binshape[2]) # The new dimensions that the image will have
+    #     # print(shapeY, shapeX, newY, newX)
+    #     poolList = []
+    #     maxList = [[[0 for _ in range(newX)] for _ in range(newY)] for _ in range(newZ)]
+    #     print(f"Convolution from {shapeZ} {shapeY} {shapeX} to {len(maxList)} {len(maxList[0])} {len(maxList[0][0])}") if v > 0 else None
+
+    #     c = 1
+    #     total = int(newZ*newY*newX)
+    #     for z in range(0, shapeZ, binshape[0]):
+    #         for y in range(0, shapeY, binshape[1]):
+    #             for x in range(0, shapeX, binshape[2]):
+    #                 patch = input[z:z+binshape[0], y:y+binshape[1], x:x+binshape[2]]
+    #                 poolList.append(patch.max())
+                    
+    #                 indices = np.unravel_index(np.argmax(patch), patch.shape)
+    #                 maxList[int(z / binshape[0])][int(y / binshape[1])][int(x / binshape[2])] = (z + indices[0], y + indices[1], x + indices[2])
+                    
+    #                 print(f"{c}/{total}", end="\r") if v > 1 else None
+    #                 c+=1
+                    
+    #     print(f"{total}/{total}, DONE!") if v > 1 else None
+                
+    #     poolArray = np.array(poolList)
+    #     poolArray = np.reshape(poolArray, (newZ, newY, newX))
+    #     maxList = np.array(maxList)
+        
+    #     return poolArray, maxList, binshape
+
+    ### Multiprocessing __poolAndMax3d
+    def __poolAndMax3d(input, binshape=(2, 2, 2), v=''):
+        """
+        Do 3D convolution and max pooling.
+        """
+
+        v = v.count('+')
+
+        # Make the 3D stack binnable by the size
+        while input.shape[0] % binshape[0] != 0:  # If the image Z dimension is not even
+            zero_plane = np.zeros_like(input[:binshape[0] - input.shape[0] % binshape[0], :, :])
+            input = np.concatenate([zero_plane, input], axis=0)
+            if v > 0:
+                print(f"Modify Z: {input.shape}, added layer.")
+
+        while input.shape[1] % binshape[1] != 0:  # If the image Y dimension is not even
+            zero_plane = np.zeros_like(input[:, :binshape[1] - input.shape[1] % binshape[1], :])
+            input = np.concatenate([zero_plane, input], axis=1)
+            if v > 0:
+                print(f"Modify Y: {input.shape}, added layer.")
+
+        while input.shape[2] % binshape[2] != 0:  # If the image X dimension is not even
+            zero_plane = np.zeros_like(input[:, :, :binshape[2] - input.shape[2] % binshape[2]])
+            input = np.concatenate([zero_plane, input], axis=2)
+            if v > 0:
+                print(f"Modify X: {input.shape}, added layer.")
+
+        if v > 0:
+            print(input.shape)
+
+        shapeZ, shapeY, shapeX = input.shape[0], input.shape[1], input.shape[2]
+        newZ, newY, newX = int(shapeZ / binshape[0]), int(shapeY / binshape[1]), int(shapeX / binshape[2])
+
+        if v > 0:
+            print(f"Convolution from {shapeZ} {shapeY} {shapeX} to {newZ} {newY} {newX}")
+
         poolList = []
         maxList = [[[0 for _ in range(newX)] for _ in range(newY)] for _ in range(newZ)]
-        print(f"Convolution from {shapeZ} {shapeY} {shapeX} to {len(maxList)} {len(maxList[0])} {len(maxList[0][0])}") if v > 0 else None
+        total = int(newZ * newY * newX)
+        perc = 0
+        c = 0
 
-        c = 1
-        total = int(newZ*newY*newX)
-        for z in range(0, shapeZ, binshape[0]):
-            for y in range(0, shapeY, binshape[1]):
-                for x in range(0, shapeX, binshape[2]):
-                    patch = input[z:z+binshape[0], y:y+binshape[1], x:x+binshape[2]]
-                    poolList.append(patch.max())
-                    
-                    indices = np.unravel_index(np.argmax(patch), patch.shape)
-                    maxList[int(z / binshape[0])][int(y / binshape[1])][int(x / binshape[2])] = (z + indices[0], y + indices[1], x + indices[2])
-                    
-                    print(f"{c}/{total}", end="\r") if v > 1 else None
-                    c+=1
-                    
-        print(f"{total}/{total}, DONE!") if v > 1 else None
-                
-        poolArray = np.array(poolList)
-        poolArray = np.reshape(poolArray, (newZ, newY, newX))
+        coords = [(z, min(z + binshape[0], shapeZ), y, min(y + binshape[1], shapeY), x, min(x + binshape[2], shapeX))
+                for z in range(0, shapeZ, binshape[0])
+                for y in range(0, shapeY, binshape[1])
+                for x in range(0, shapeX, binshape[2])]
+
+        def process_block(coord):
+            z_start, z_end, y_start, y_end, x_start, x_end = coord
+            block_results = []
+            for z in range(z_start, z_end):
+                for y in range(y_start, y_end):
+                    for x in range(x_start, x_end):
+                        patch = input[z:z + binshape[0], y:y + binshape[1], x:x + binshape[2]]
+                        max_val = patch.max()
+                        indices = np.unravel_index(np.argmax(patch), patch.shape)
+                        max_coords = (z + indices[0], y + indices[1], x + indices[2])
+                        block_results.append((max_val, max_coords, z // binshape[0], y // binshape[1], x // binshape[2]))
+            return block_results
+
+        results = Parallel(n_jobs=-1)(delayed(process_block)(coord) for coord in coords)
+
+        for block_results in results:
+            for max_val, max_coords, i, j, k in block_results:
+                poolList.append(max_val)
+                maxList[i][j][k] = max_coords
+                c += 1
+                if int(c * 100 / total) > perc:
+                    perc += 1
+                    if perc > 1 and v > 0:
+                        print(f"{c}/{total}, {perc}%", end="\r")
+
+        if v > 1:
+            print(f"{c}/{total}, {perc}%, DONE!")
+
+        poolArray = np.array(poolList).reshape(newZ, newY, newX)
         maxList = np.array(maxList)
-        
+
         return poolArray, maxList, binshape
+    #### End Multiprocessing __poolAndMax3d
 
     def __deconv3d(self, input, maxList, binshape=(2,2,2), v=''):
         '''

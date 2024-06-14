@@ -10,7 +10,7 @@ Once selected the 3D block, the script will run a watershed algorithm on it. It 
 
 By selecting the masks indexes and writing them down in the label_numbers list in the file, it will create a single mask with all the pieces. Later, this information is stored in a file called segment_file-v1.txt in case you need to recover any information since the same algorithm run on the same image will output the same regions. 
 
-CAREFUL: If the cell is not well being detected, try correcting the image by doing some color or gamma correction.  
+CAREFUL: If the cell is not well being detected, try correcting the image by doing some color or gamma correction. If it does not work, maybe the quality of the cell or the image is not good enough...   
 
 To recover more of the membrane shape, there is a second part of the algorithm which does watershed again but applying a sobel kernel on the image and removing the mask found before. The output will be a 3D array with the different watershed regions found. Open it in napari and again write the masks indices in label_gradient_numbers. Save the total mask and at the end, the segmentation file will get updated with this label_gradient_numbers for further usage. 
 

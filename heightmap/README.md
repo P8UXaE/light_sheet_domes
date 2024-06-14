@@ -81,7 +81,96 @@ From frame 187 to frame 250:
 - rotate by 45 degrees around (1, 0, 1)
 
 
+Here there is an aninmation that can focus on a cell, show it x, y slicing and expand the zoom again:
+At frame 0:
+- reset transformation
+- rotate by -80.0 degrees vertically
+- rotate by -10.0 degrees around (0, 0, 1)
+- rotate by -45.0 degrees horizontally 
+- zoom by a factor of 0.7
+- change all channels' bounding box x to (0.0, 858.0)
+- change all channels' bounding box y to (0.0, 858.0)
+- change all channels' bounding box z to (0, 550)
+
+From frame 0 to frame 10:
+- change all channels' bounding box x to (252, 332)
+- change all channels' bounding box y to (400, 482)
+- change all channels' bounding box z to (320, 390)
+
+From frame 10 to frame 20:
+- zoom by a factor of 5
+- translate by (307, -320, 0).
+
+From frame 20 to frame 60:
+- change all channels' bounding box x to (332, 332)
+
+At frame 60:
+- change all channels' bounding box y to (400, 400)
+- change all channels' bounding box x to (252, 332)
+
+From frame 60 to frame 100:
+- change all channels' bounding box y to (400, 482)
+
+
+From frame 100 to frame 110:
+- zoom by a factor of 0.2
+- translate by (-61.4, 64, 0).
+
+From frame 110 to frame 120:
+- change all channels' bounding box x to (0, 858)
+- change all channels' bounding box y to (0, 858)
+- change all channels' bounding box z to (0, 550)
+
+
+Another:
+
+At frame 0:
+- reset transformation
+- rotate by -80.0 degrees vertically
+- rotate by -10.0 degrees around (0, 0, 1)
+- rotate by -45.0 degrees horizontally 
+- zoom by a factor of 0.7
+- change all channels' bounding box x to (0.0, 858.0)
+- change all channels' bounding box y to (0.0, 858.0)
+- change all channels' bounding box z to (0, 550)
+
+From frame 0 to frame 40:
+- change all channels' bounding box x to (252, 332)
+- change all channels' bounding box y to (400, 482)
+- change all channels' bounding box z to (320, 390)
+
+From frame 10 to frame 40:
+- zoom by a factor of 5
+- translate by (307, -320, 0).
+
+From frame 40 to frame 100:
+- change all channels' bounding box x to (300, 332)
+
+From frame 100 to frame 140:
+- change all channels' bounding box x to (325, 332)
+
+At frame 140:
+- change all channels' bounding box y to (400, 410)
+- change all channels' bounding box x to (252, 332)
+
+From frame 140 to frame 200:
+- change all channels' bounding box y to (400, 482)
+
+
+From frame 200 to frame 240:
+- zoom by a factor of 0.2
+- translate by (-61.4, 64, 0).
+
+From frame 220 to frame 240:
+- change all channels' bounding box x to (0, 858)
+- change all channels' bounding box y to (0, 858)
+- change all channels' bounding box z to (0, 550)
+
+
+
 # Visualisation of mesh in blender
+
+If somebody is able to clean 100% the surrounding dots, you can directly mesh the dots. Meanwhile, you can still get the tissue shape. To do so, you should blur the dots and then mesh the blurred dots. Inside blender, you can still filter the mesh in the right panel (threshold).
 
 The steps to follow are the same as described in Mypose. The difference is that if you want to calculate curvature in meshlab or other software, you should reduce the amount of vertices and edges of the mesh for a faster calculation. Initially, a mesh that comes from a gaussian can have more than 2 million vertices. To reduce the amount of it add a modifier to the mesh (be careful to apply the mesh to the data before doing this). The modifier is Generate &rarr; Decimate. In Collapse reduce the ratio so the amount of faces is somewhere around 200k or 300k. It may take a while, but this will make the computation on the mesh much faster.
 
